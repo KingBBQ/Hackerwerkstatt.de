@@ -109,6 +109,21 @@ function downloadScript() {
     window.location.href = '/admin/download-script';
 }
 
+function copyToClipboard(btn) {
+    const container = btn.closest('.code-block-container');
+    const codeBlock = container.querySelector('.code-block');
+    const text = codeBlock.innerText || codeBlock.textContent;
+
+    navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = originalText, 2000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        showMessage('Failed to copy to clipboard', true);
+    });
+}
+
 // Init
 document.addEventListener('DOMContentLoaded', async () => {
     // Check path to run correct logic

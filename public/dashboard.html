@@ -26,6 +26,49 @@
             <button id="save-key-btn">Update Key</button>
         </div>
 
+        <div class="section" style="margin-top: 40px; border-top: 1px dashed #333; padding-top: 20px;">
+            <h2>Dein Projekt veröffentlichen</h2>
+            <p>Bist du bereit, dein eigenes Projekt zu starten? Folge diesen Schritten, um einen Docker-Container mit
+                einer öffentlichen URL bereitzustellen.</p>
+
+            <h3>1. Mit KI generieren</h3>
+            <p>Kopiere diesen Prompt in ChatGPT oder Claude, um eine funktionierende <code>docker-compose.yml</code> zu
+                erhalten:</p>
+            <div class="code-block-container">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
+                <div class="code-block">Ich möchte meine Web-App mit Docker Compose deployen. Bitte erstelle mir eine
+                    docker-compose.yml Datei. Sie MUSS das Netzwerk 'traefik_proxy' verwenden UND Labels für Traefik
+                    haben, damit sie unter 'meinprojekt.hackerwerkstatt.de' erreichbar ist (ersetze meinprojekt mit
+                    meinem echten Projektnamen).</div>
+            </div>
+
+            <h3>2. Nutze diese Vorlage</h3>
+            <p>Oder verwende direkt diese Vorlage. Speichere sie als <code>docker-compose.yml</code> auf dem Server.</p>
+            <div class="code-block-container">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
+                <pre class="code-block">services:
+  my-app:
+    image: nginx:alpine  # Ersetze dies mit deinem Image
+    networks:
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.meinprojekt.rule=Host(`meinprojekt.hackerwerkstatt.de`)"
+      - "traefik.http.services.meinprojekt.loadbalancer.server.port=80"
+
+networks:
+  traefik_proxy:
+    external: true</pre>
+            </div>
+
+            <h3>3. Starten</h3>
+            <p>Führe diesen Befehl in dem Ordner aus, in dem deine Datei liegt:</p>
+            <div class="code-block-container">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
+                <div class="code-block">docker compose up -d</div>
+            </div>
+        </div>
+
         <div id="admin-section" class="section"
             style="margin-top: 40px; border-top: 1px dashed #333; padding-top: 20px;">
             <h2 style="color:red">ADMIN CONTROL</h2>

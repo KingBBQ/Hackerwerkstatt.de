@@ -28,7 +28,8 @@ body {
   background: rgba(0, 0, 0, 0.8);
 }
 
-h1, h2 {
+h1,
+h2 {
   text-transform: uppercase;
   letter-spacing: 2px;
   text-shadow: 0 0 5px var(--accent-color);
@@ -60,7 +61,8 @@ textarea {
   box-sizing: border-box;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
   outline: none;
   box-shadow: 0 0 5px var(--accent-color);
 }
@@ -127,46 +129,94 @@ button:hover {
 }
 
 .admin-badge {
-    color: red;
-    font-weight: bold;
-    margin-left: 10px;
+  color: red;
+  font-weight: bold;
+  margin-left: 10px;
 }
 
 /* Glitch Effect (Simple) */
 .glitch {
-    position: relative;
+  position: relative;
 }
 
 .glitch::before,
 .glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .glitch::before {
-    left: 2px;
-    text-shadow: -1px 0 red;
-    clip: rect(24px, 550px, 90px, 0);
-    animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+  left: 2px;
+  text-shadow: -1px 0 red;
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
 }
 
 .glitch::after {
-    left: -2px;
-    text-shadow: -1px 0 blue;
-    clip: rect(85px, 550px, 140px, 0);
-    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+  left: -2px;
+  text-shadow: -1px 0 blue;
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
 }
 
 @keyframes glitch-anim-1 {
-  0% { clip: rect(20px, 9999px, 100px, 0); }
-  100% { clip: rect(60px, 9999px, 80px, 0); }
+  0% {
+    clip: rect(20px, 9999px, 100px, 0);
+  }
+
+  100% {
+    clip: rect(60px, 9999px, 80px, 0);
+  }
 }
 
 @keyframes glitch-anim-2 {
-  0% { clip: rect(100px, 9999px, 120px, 0); }
-  100% { clip: rect(10px, 9999px, 200px, 0); }
+  0% {
+    clip: rect(100px, 9999px, 120px, 0);
+  }
+
+  100% {
+    clip: rect(10px, 9999px, 200px, 0);
+  }
+}
+
+/* Documentation / Guide Styles */
+.code-block-container {
+  position: relative;
+  margin-bottom: 15px;
+  border: 1px solid #333;
+}
+
+.code-block {
+  background: #111;
+  color: #ccc;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 15px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  margin: 0;
+  font-size: 0.9em;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 2px 8px;
+  font-size: 0.8em;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+  background: #555;
+  box-shadow: none;
+  /* Override default button glow */
 }
