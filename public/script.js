@@ -80,9 +80,29 @@ async function loadAdminData() {
     list.innerHTML = '';
     res.forEach(u => {
         const li = document.createElement('li');
-        li.innerHTML = `<strong>${u.username}</strong> ${u.is_admin ? '<span class="admin-badge">[ADMIN]</span>' : ''}<br>Key: ${u.ssh_key ? 'Present' : 'Missing'}`;
+        li.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <span>
+                    <strong>${u.username}</strong> ${u.is_admin ? '<span class="admin-badge">[ADMIN]</span>' : ''}
+                    <br>Key: ${u.ssh_key ? 'Present' : 'Missing'}
+                </span>
+                <button onclick="deleteUser(${u.id})" style="background:darkred; color:white; border:none; padding:5px 10px; cursor:pointer;">Delete</button>
+            </div>
+        `;
         list.appendChild(li);
     });
+}
+
+async function deleteUser(id) {
+    if (!confirm('Are you sure you want to delete this user? This cannot be undone.')) return;
+
+    const res = await apiRequest(`/admin/users/${id}`, 'DELETE');
+    if (res.error) {
+        showMessage(res.error, true);
+    } else {
+        showMessage(res.message);
+        loadAdminData(); // Refresh list
+    }
 }
 
 function downloadScript() {

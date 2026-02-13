@@ -20,6 +20,26 @@ router.get('/users', isAdmin, (req, res) => {
     });
 });
 
+// Delete user
+router.delete('/users/:id', isAdmin, (req, res) => {
+    const userId = req.params.id;
+
+    // Prevent self-deletion
+    if (parseInt(userId) === req.session.userId) {
+        return res.status(400).json({ error: 'Cannot delete yourself' });
+    }
+
+    db.run("DELETE FROM users WHERE id = ?", [userId], function (err) {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.json({ message: 'User deleted successfully' });
+    });
+});
+
 // Generate setup script
 router.get('/download-script', isAdmin, (req, res) => {
     db.all("SELECT username, ssh_key FROM users", (err, rows) => {
