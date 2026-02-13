@@ -4,3 +4,4 @@ server.log
 cookies.txt
 *.sh
 !test_api.sh
+hackerwerkstatt.db
