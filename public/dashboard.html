@@ -37,9 +37,11 @@
             <div class="code-block-container">
                 <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
                 <div class="code-block">Ich möchte meine Web-App mit Docker Compose deployen. Bitte erstelle mir eine
-                    docker-compose.yml Datei. Sie MUSS das Netzwerk 'traefik_proxy' verwenden UND Labels für Traefik
-                    haben, damit sie unter 'meinprojekt.hackerwerkstatt.de' erreichbar ist (ersetze meinprojekt mit
-                    meinem echten Projektnamen).</div>
+                    docker-compose.yml Datei. Sie MUSS das externe Netzwerk 'web' verwenden UND Labels für
+                    caddy-docker-proxy haben, damit sie unter 'meinprojekt.hackerwerkstatt.de' erreichbar ist (ersetze
+                    meinprojekt mit meinem echten Projektnamen). HTTPS wird automatisch von Caddy bereitgestellt. Die
+                    Labels sehen so aus: caddy: meinprojekt.hackerwerkstatt.de und caddy.reverse_proxy: "{{upstreams
+                    PORT}}".</div>
             </div>
 
             <h3>2. Nutze diese Vorlage</h3>
@@ -48,16 +50,15 @@
                 <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
                 <pre class="code-block">services:
   my-app:
-    image: nginx:alpine  # Ersetze dies mit deinem Image
+    build: .  # Oder z.B. image: nginx:alpine
     networks:
-      - traefik_proxy
+      - web
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.meinprojekt.rule=Host(`meinprojekt.hackerwerkstatt.de`)"
-      - "traefik.http.services.meinprojekt.loadbalancer.server.port=80"
+      caddy: meinprojekt.hackerwerkstatt.de
+      caddy.reverse_proxy: "{{upstreams 80}}"
 
 networks:
-  traefik_proxy:
+  web:
     external: true</pre>
             </div>
 
