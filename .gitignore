@@ -1,0 +1,6 @@
+node_modules/
+server.log
+.DS_Store
+cookies.txt
+*.sh
+!test_api.sh

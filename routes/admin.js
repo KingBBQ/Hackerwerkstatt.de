@@ -40,8 +40,8 @@ echo "Starting user setup..."
             const safeUsername = user.username.replace(/[^a-z0-9]/gi, '').toLowerCase();
 
             if (safeUsername !== user.username) {
-                scriptContent += `# Skipping unsafe username: ${user.username} (sanitized: ${safeUsername}) -> Please check manually\n`;
-                return;
+                scriptContent += `# Note: Username '${user.username}' converted to lowercase '${safeUsername}' for system compatibility.\n`;
+                // We continue using safeUsername
             }
 
             scriptContent += `

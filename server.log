@@ -1,0 +1,7 @@
+nohup: Eingabe wird ignoriert
+
+> hackerwerkstatt@1.0.0 start
+> node server.js
+
+Server running on http://localhost:3000
+Connected to database
