@@ -41,6 +41,15 @@ This is critical for subdomains and automatic HTTPS.
     -   Go to `https://hackerwerkstatt.de` -> Should see your Main App (with valid lock icon!).
     -   Go to `https://demo.hackerwerkstatt.de` -> Should see the "Whoami" demo service.
 
+## 4. Administration
+
+To make a user an admin, run the following command on the server (inside the project folder):
+
+```bash
+# Replace 'your_username' with the actual username you registered
+docker compose exec hackerwerkstatt node make_admin.js your_username
+```
+
 ## 3. How Participants Add a Service
 
 Participants can run their own Docker containers and expose them via a subdomain by connecting to the `web` network and adding simple labels.
