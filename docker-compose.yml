@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:ci-alpine
+    container_name: caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - CADDY_INGRESS_NETWORKS=web
+    networks:
+      - web
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - caddy_data:/data
+    restart: unless-stopped
+
+  hackerwerkstatt:
+    build: .
+    container_name: hackerwerkstatt
+    restart: unless-stopped
+    volumes:
+      - ./hackerwerkstatt.db:/usr/src/app/hackerwerkstatt.db
+      # - ./public/uploads:/usr/src/app/public/uploads
+    networks:
+      - web
+    labels:
+      caddy: hackerwerkstatt.de
+      caddy.reverse_proxy: "{{upstreams 3000}}"
+
+  # Example setup for a participant
+  user-project-demo:
+    image: traefik/whoami
+    container_name: user-demo
+    networks:
+      - web
+    labels:
+      caddy: demo.hackerwerkstatt.de
+      caddy.reverse_proxy: "{{upstreams 80}}"
+
+networks:
+  web:
+    external: true
+
+volumes:
+  caddy_data: {}
