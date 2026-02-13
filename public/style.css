@@ -1,0 +1,172 @@
+/* Hacker Theme */
+:root {
+  --bg-color: #0d0d0d;
+  --text-color: #0f0;
+  --accent-color: #00ff00;
+  --border-color: #333;
+  --font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 90%;
+  max-width: 800px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+  background: rgba(0, 0, 0, 0.8);
+}
+
+h1, h2 {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 5px var(--accent-color);
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  background: #000;
+  border: 1px solid var(--accent-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px var(--accent-color);
+}
+
+button {
+  background: #000;
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  padding: 10px 20px;
+  cursor: pointer;
+  font-family: var(--font-family);
+  text-transform: uppercase;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: var(--accent-color);
+  color: #000;
+  box-shadow: 0 0 10px var(--accent-color);
+}
+
+/* Tab/Section Switching */
+.hidden {
+  display: none;
+}
+
+.nav-links {
+  margin-bottom: 20px;
+}
+
+.nav-links a {
+  color: var(--text-color);
+  text-decoration: none;
+  margin-right: 15px;
+  border-bottom: 1px dashed var(--accent-color);
+}
+
+.nav-links a:hover {
+  background: var(--accent-color);
+  color: #000;
+}
+
+/* Messages */
+#message {
+  margin-top: 15px;
+  color: yellow;
+  font-weight: bold;
+}
+
+/* Dashboard specific */
+#user-list {
+  list-style: none;
+  padding: 0;
+}
+
+#user-list li {
+  background: #111;
+  border: 1px solid #333;
+  margin-bottom: 5px;
+  padding: 10px;
+  font-size: 0.9em;
+}
+
+.admin-badge {
+    color: red;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* Glitch Effect (Simple) */
+.glitch {
+    position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch::before {
+    left: 2px;
+    text-shadow: -1px 0 red;
+    clip: rect(24px, 550px, 90px, 0);
+    animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+    left: -2px;
+    text-shadow: -1px 0 blue;
+    clip: rect(85px, 550px, 140px, 0);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip: rect(20px, 9999px, 100px, 0); }
+  100% { clip: rect(60px, 9999px, 80px, 0); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip: rect(100px, 9999px, 120px, 0); }
+  100% { clip: rect(10px, 9999px, 200px, 0); }
+}
