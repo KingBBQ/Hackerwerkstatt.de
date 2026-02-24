@@ -218,5 +218,61 @@ button:hover {
   opacity: 1;
   background: #555;
   box-shadow: none;
-  /* Override default button glow */
+}
+
+/* Deploy Status */
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Deploy Log */
+#deploy-log {
+  background: #0a0a0a;
+  color: #aaa;
+  font-size: 0.85em;
+  line-height: 1.4;
+  padding: 15px;
+  border: 1px solid #222;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Number input */
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  background: #000;
+  border: 1px solid var(--accent-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  box-shadow: 0 0 5px var(--accent-color);
+}
+
+/* Details/Summary */
+details summary {
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+details summary:hover {
+  color: var(--accent-color);
+}
+
+details[open] summary {
+  margin-bottom: 15px;
 }
