@@ -6,7 +6,8 @@ const db = require('./database');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
-const adminRoutes = require('./routes/admin'); // Import admin routes
+const adminRoutes = require('./routes/admin');
+const deployRoutes = require('./routes/deploy');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,7 +28,8 @@ app.use(session({
 // Routes
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
-app.use('/admin', adminRoutes); // Mount admin routes
+app.use('/admin', adminRoutes);
+app.use('/deploy', deployRoutes);
 
 // Start Server
 app.listen(PORT, () => {

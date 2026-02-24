@@ -26,29 +26,91 @@
             <button id="save-key-btn">Update Key</button>
         </div>
 
-        <div class="section" style="margin-top: 40px; border-top: 1px dashed #333; padding-top: 20px;">
-            <h2>Dein Projekt veröffentlichen</h2>
-            <p>Bist du bereit, dein eigenes Projekt zu starten? Folge diesen Schritten, um einen Docker-Container mit
-                einer öffentlichen URL bereitzustellen.</p>
+        <!-- One-Click Deploy Section -->
+        <div id="deploy-section" class="section" style="margin-top: 40px; border-top: 1px dashed #333; padding-top: 20px;">
+            <h2>One-Click Deploy</h2>
 
-            <h3>1. Mit KI generieren</h3>
-            <p>Kopiere diesen Prompt in ChatGPT oder Claude, um eine funktionierende <code>docker-compose.yml</code> zu
-                erhalten:</p>
-            <div class="code-block-container">
-                <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
-                <div class="code-block">Ich möchte meine Web-App mit Docker Compose deployen. Bitte erstelle mir eine
-                    docker-compose.yml Datei. Sie MUSS das externe Netzwerk 'web' verwenden UND Labels für
-                    caddy-docker-proxy haben, damit sie unter 'meinprojekt.hackerwerkstatt.de' erreichbar ist (ersetze
-                    meinprojekt mit meinem echten Projektnamen). HTTPS wird automatisch von Caddy bereitgestellt. Die
-                    Labels sehen so aus: caddy: meinprojekt.hackerwerkstatt.de und caddy.reverse_proxy: "{{upstreams
-                    PORT}}".</div>
+            <div id="deploy-not-verified" style="display:none;">
+                <p style="color: orange;">Dein Account wurde noch nicht freigeschaltet. Ein Admin muss dich zuerst verifizieren, bevor du deployen kannst.</p>
             </div>
 
-            <h3>2. Nutze diese Vorlage</h3>
-            <p>Oder verwende direkt diese Vorlage. Speichere sie als <code>docker-compose.yml</code> auf dem Server.</p>
-            <div class="code-block-container">
-                <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
-                <pre class="code-block">services:
+            <div id="deploy-verified" style="display:none;">
+                <p>Verlinke dein öffentliches Git-Repository und deploye es mit einem Klick.</p>
+
+                <div class="form-group">
+                    <label for="deploy-repo">Git Repository URL (HTTPS)</label>
+                    <input type="text" id="deploy-repo" placeholder="https://github.com/user/project.git">
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="deploy-subdomain">Subdomain</label>
+                        <div style="display: flex; align-items: center; gap: 0;">
+                            <input type="text" id="deploy-subdomain" placeholder="meinprojekt"
+                                style="border-right: none;">
+                            <span
+                                style="background: #111; border: 1px solid var(--accent-color); border-left: none; padding: 10px; color: #666; white-space: nowrap;">.hackerwerkstatt.de</span>
+                        </div>
+                    </div>
+                    <div class="form-group" style="width: 100px;">
+                        <label for="deploy-port">Port</label>
+                        <input type="number" id="deploy-port" value="80" min="1" max="65535">
+                    </div>
+                </div>
+
+                <details style="margin-bottom: 15px;">
+                    <summary style="cursor: pointer; color: #666;">KI-Fehleranalyse (optional)</summary>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label for="deploy-ai-key">Anthropic API Key</label>
+                        <input type="password" id="deploy-ai-key"
+                            placeholder="sk-ant-...">
+                        <small style="color: #666;">Bei Fehlern wird automatisch eine KI-Analyse erstellt.</small>
+                    </div>
+                </details>
+
+                <button id="deploy-save-btn">Konfiguration speichern</button>
+
+                <div id="deploy-controls" style="margin-top: 15px; display: flex; gap: 10px; align-items: center;">
+                    <button id="deploy-start-btn" style="background: #001a00; border-color: #0f0;">DEPLOY</button>
+                    <button id="deploy-stop-btn" style="background: #1a0000; border-color: darkred; color: red; display: none;">STOP</button>
+                    <button id="deploy-analyze-btn" style="display: none;">KI-Analyse</button>
+                    <span id="deploy-status-indicator"></span>
+                </div>
+
+                <div id="deploy-log-container" style="display: none; margin-top: 15px;">
+                    <h3>Deployment Log</h3>
+                    <pre id="deploy-log" class="code-block"
+                        style="max-height: 400px; overflow-y: auto; font-size: 0.85em;"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Deploy Guide (collapsed) -->
+        <div class="section" style="margin-top: 40px; border-top: 1px dashed #333; padding-top: 20px;">
+            <details>
+                <summary style="cursor: pointer;">
+                    <h2 style="display: inline; border: none; padding: 0; margin: 0;">Manuelles Deployment (Anleitung)</h2>
+                </summary>
+
+                <h3>1. Mit KI generieren</h3>
+                <p>Kopiere diesen Prompt in ChatGPT oder Claude, um eine funktionierende
+                    <code>docker-compose.yml</code> zu erhalten:</p>
+                <div class="code-block-container">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
+                    <div class="code-block">Ich möchte meine Web-App mit Docker Compose deployen. Bitte erstelle mir eine
+                        docker-compose.yml Datei. Sie MUSS das externe Netzwerk 'web' verwenden UND Labels für
+                        caddy-docker-proxy haben, damit sie unter 'meinprojekt.hackerwerkstatt.de' erreichbar ist (ersetze
+                        meinprojekt mit meinem echten Projektnamen). HTTPS wird automatisch von Caddy bereitgestellt. Die
+                        Labels sehen so aus: caddy: meinprojekt.hackerwerkstatt.de und caddy.reverse_proxy: "{{upstreams
+                        PORT}}".</div>
+                </div>
+
+                <h3>2. Nutze diese Vorlage</h3>
+                <p>Oder verwende direkt diese Vorlage. Speichere sie als <code>docker-compose.yml</code> auf dem Server.
+                </p>
+                <div class="code-block-container">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
+                    <pre class="code-block">services:
   my-app:
     build: .  # Oder z.B. image: nginx:alpine
     networks:
@@ -60,16 +122,18 @@
 networks:
   web:
     external: true</pre>
-            </div>
+                </div>
 
-            <h3>3. Starten</h3>
-            <p>Führe diesen Befehl in dem Ordner aus, in dem deine Datei liegt:</p>
-            <div class="code-block-container">
-                <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
-                <div class="code-block">docker compose up -d</div>
-            </div>
+                <h3>3. Starten</h3>
+                <p>Führe diesen Befehl in dem Ordner aus, in dem deine Datei liegt:</p>
+                <div class="code-block-container">
+                    <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
+                    <div class="code-block">docker compose up -d</div>
+                </div>
+            </details>
         </div>
 
+        <!-- Admin Section -->
         <div id="admin-section" class="section"
             style="margin-top: 40px; border-top: 1px dashed #333; padding-top: 20px;">
             <h2 style="color:red">ADMIN CONTROL</h2>

@@ -12,11 +12,28 @@ const isAdmin = (req, res, next) => {
 
 // Get all users (for admin dashboard)
 router.get('/users', isAdmin, (req, res) => {
-    db.all("SELECT id, username, ssh_key, is_admin FROM users", (err, rows) => {
+    db.all("SELECT id, username, ssh_key, is_admin, is_verified, git_repo, subdomain, deploy_status FROM users", (err, rows) => {
         if (err) {
             return res.status(500).json({ error: 'Database error' });
         }
         res.json(rows);
+    });
+});
+
+// Verify/unverify a user
+router.post('/users/:id/verify', isAdmin, (req, res) => {
+    const userId = req.params.id;
+    const { verified } = req.body;
+    const value = verified ? 1 : 0;
+
+    db.run("UPDATE users SET is_verified = ? WHERE id = ?", [value, userId], function (err) {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.json({ message: verified ? 'User verifiziert.' : 'Verifizierung entzogen.' });
     });
 });
 

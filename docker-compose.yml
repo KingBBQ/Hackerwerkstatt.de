@@ -22,7 +22,10 @@ services:
     restart: unless-stopped
     volumes:
       - ./hackerwerkstatt.db:/usr/src/app/hackerwerkstatt.db
-      # - ./public/uploads:/usr/src/app/public/uploads
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /srv/deployments:/srv/deployments
+    environment:
+      - DEPLOY_BASE_PATH=/srv/deployments
     networks:
       - web
     labels:
