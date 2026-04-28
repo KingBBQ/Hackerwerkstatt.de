@@ -37,6 +37,70 @@
             <div id="deploy-verified" style="display:none;">
                 <p>Verlinke dein öffentliches Git-Repository und deploye es mit einem Klick.</p>
 
+                <!-- Anleitung: Wie erstelle ich ein Repo mit Dockerfile? -->
+                <details style="margin-bottom: 20px; border: 1px dashed #333; padding: 15px;">
+                    <summary style="cursor: pointer; color: #0f0;">Wie erstelle ich ein passendes Git-Repository? (Anleitung aufklappen)</summary>
+
+                    <p style="margin-top: 15px;">Dein Repository braucht genau eine Datei im Hauptverzeichnis: ein <code>Dockerfile</code>. Der Server baut daraus automatisch deine App.</p>
+
+                    <h3>Option 1: KI-Prompt (empfohlen)</h3>
+                    <p>Kopiere diesen Prompt in <a href="https://claude.ai" target="_blank" style="color:#0f0;">Claude</a> oder ChatGPT und beschreibe danach deine App:</p>
+                    <div class="code-block-container">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
+                        <div class="code-block">Erstelle mir eine einfache Web-App mit einem Dockerfile, die ich auf einem Server deployen kann. Anforderungen:
+- Die App lauscht auf Port 80 (oder über Umgebungsvariable PORT konfigurierbar)
+- Das Dockerfile basiert auf einem schlanken Basis-Image (z.B. node:18-alpine, python:3.11-slim oder nginx:alpine)
+- Gib mir alle Dateien, die ich in ein GitHub-Repository hochladen muss
+- Das Dockerfile muss im Hauptverzeichnis des Repos liegen
+- Die App soll [HIER DEINE IDEE BESCHREIBEN]</div>
+                    </div>
+
+                    <h3>Option 2: Minimales Beispiel (Node.js)</h3>
+                    <p>Drei Dateien reichen für eine funktionierende App. Erstelle ein neues Verzeichnis und lege diese Dateien an:</p>
+
+                    <p style="margin-bottom: 4px;"><strong>Dockerfile</strong></p>
+                    <div class="code-block-container">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
+                        <pre class="code-block">FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --omit=dev
+COPY . .
+EXPOSE 80
+CMD ["node", "server.js"]</pre>
+                    </div>
+
+                    <p style="margin-bottom: 4px;"><strong>server.js</strong></p>
+                    <div class="code-block-container">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
+                        <pre class="code-block">const http = require('http');
+const PORT = process.env.PORT || 80;
+
+http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end('&lt;h1&gt;Mein Hackerwerkstatt-Projekt&lt;/h1&gt;');
+}).listen(PORT, () => console.log(`Läuft auf Port ${PORT}`));</pre>
+                    </div>
+
+                    <p style="margin-bottom: 4px;"><strong>package.json</strong></p>
+                    <div class="code-block-container">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
+                        <pre class="code-block">{ "name": "mein-projekt", "version": "1.0.0", "main": "server.js" }</pre>
+                    </div>
+
+                    <h3>Repository auf GitHub hochladen</h3>
+                    <div class="code-block-container">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Kopieren</button>
+                        <pre class="code-block">git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/DEIN-USERNAME/DEIN-REPO.git
+git push -u origin main</pre>
+                    </div>
+                    <p>Die HTTPS-URL deines Repos (<code>https://github.com/...</code>) trägst du dann unten ein.</p>
+                </details>
+
                 <div class="form-group">
                     <label for="deploy-repo">Git Repository URL (HTTPS)</label>
                     <input type="text" id="deploy-repo" placeholder="https://github.com/user/project.git">
