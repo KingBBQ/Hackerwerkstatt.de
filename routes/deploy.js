@@ -238,64 +238,28 @@ async function runDeployment(userId, user) {
     const projectName = `hw-${safeUsername}`;
 
     try {
-        // 1. Create deployment directory
-        await fs.mkdir(projectDir, { recursive: true });
-        await appendLog(userId, `[1/5] Deployment-Verzeichnis: ${projectDir}`);
-
-        // 2. Clone or pull
-        let repoExists = false;
+        // 1. Alten Container stoppen und Verzeichnis löschen
+        await appendLog(userId, `[1/5] Bereinige alte Deployment-Daten...`);
         try {
-            await fs.access(path.join(repoDir, '.git'));
-            repoExists = true;
-        } catch { }
-
-        if (repoExists) {
-            await appendLog(userId, '[2/5] Repository existiert, pull Updates...');
-            try {
-                // Detect and handle local changes / conflicts
-                const { stdout: statusOut } = await execAsync('git status --porcelain', { cwd: repoDir, timeout: 10000 });
-                if (statusOut.trim()) {
-                    await appendLog(userId, 'WARNUNG: Lokale Änderungen erkannt. Setze zurück...');
-                    await execAsync('git checkout -- . && git clean -fd', { cwd: repoDir, timeout: 15000 });
-                    await appendLog(userId, 'Lokale Änderungen entfernt.');
-                }
-
-                // Fetch and reset to remote
-                const { stderr: fetchErr } = await execAsync('git fetch origin', { cwd: repoDir, timeout: 120000 });
-                if (fetchErr) await appendLog(userId, fetchErr);
-
-                const { stdout: branchOut } = await execAsync('git rev-parse --abbrev-ref HEAD', { cwd: repoDir, timeout: 5000 });
-                const branch = branchOut.trim() || 'main';
-
-                const { stdout: resetOut, stderr: resetErr } = await execAsync(
-                    `git reset --hard origin/${branch}`,
-                    { cwd: repoDir, timeout: 30000 }
-                );
-                if (resetOut) await appendLog(userId, resetOut.trim());
-                if (resetErr) await appendLog(userId, resetErr.trim());
-                await appendLog(userId, 'Pull erfolgreich.');
-
-            } catch (pullErr) {
-                await appendLog(userId, `Pull-Fehler: ${pullErr.message}`);
-                await appendLog(userId, 'Versuche vollständigen Neu-Clone...');
-                await fs.rm(repoDir, { recursive: true, force: true });
-                const { stderr } = await execAsync(
-                    `git clone ${shellQuote(user.git_repo)} ${shellQuote(repoDir)}`,
-                    { timeout: 120000 }
-                );
-                if (stderr) await appendLog(userId, stderr);
-                await appendLog(userId, 'Neu-Clone erfolgreich.');
-            }
-        } else {
-            await appendLog(userId, '[2/5] Klone Repository...');
-            const { stdout, stderr } = await execAsync(
-                `git clone ${shellQuote(user.git_repo)} ${shellQuote(repoDir)}`,
-                { timeout: 120000 }
+            await execAsync(
+                `docker compose -p ${shellQuote(projectName)} -f ${shellQuote(composePath)} down --remove-orphans`,
+                { timeout: 60000 }
             );
-            if (stdout) await appendLog(userId, stdout.trim());
-            if (stderr) await appendLog(userId, stderr.trim());
-            await appendLog(userId, 'Clone erfolgreich.');
-        }
+            await appendLog(userId, 'Alter Container gestoppt.');
+        } catch { /* kein alter Container vorhanden */ }
+        await fs.rm(projectDir, { recursive: true, force: true });
+        await fs.mkdir(projectDir, { recursive: true });
+        await appendLog(userId, 'Bereinigt.');
+
+        // 2. Frisch klonen
+        await appendLog(userId, `[2/5] Klone Repository...`);
+        const { stdout, stderr } = await execAsync(
+            `git clone ${shellQuote(user.git_repo)} ${shellQuote(repoDir)}`,
+            { timeout: 120000 }
+        );
+        if (stdout) await appendLog(userId, stdout.trim());
+        if (stderr) await appendLog(userId, stderr.trim());
+        await appendLog(userId, 'Clone erfolgreich.');
 
         // 3. Check for Dockerfile
         await appendLog(userId, '[3/5] Prüfe Dockerfile...');
